@@ -1,0 +1,44 @@
+# AWS SDK and utilities
+boto3==1.34.144
+botocore==1.34.144
+
+# Web framework for Lambda
+fastapi==0.104.1
+uvicorn==0.24.0
+mangum==0.17.0
+
+# Image processing
+Pillow==10.0.0
+
+# Data validation and serialization
+pydantic==2.4.2
+marshmallow==3.20.1
+
+# UUID and datetime handling
+python-dateutil==2.8.2
+
+# Testing framework
+pytest==7.4.2
+pytest-mock==3.11.1
+pytest-cov==4.1.0
+moto==4.2.14
+
+# LocalStack client
+localstack-client
+
+# Development tools
+black==23.9.1
+flake8==6.1.0
+mypy==1.6.1
+
+# Environment variables
+python-dotenv==1.0.0
+
+# JSON handling
+orjson==3.9.7
+
+# HTTP requests for testing
+requests==2.31.0
+
+# Base64 encoding/decoding
+base64io==1.0.3

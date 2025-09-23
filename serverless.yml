@@ -1,0 +1,132 @@
+service: instagram-image-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  timeout: 30
+  memorySize: 512
+  environment:
+    S3_BUCKET_NAME: ${self:custom.bucketName}
+    DYNAMODB_TABLE_NAME: ${self:custom.tableName}
+    AWS_ENDPOINT_URL: ${self:custom.localstackEndpoint.${self:provider.stage}, ''}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObjectAcl
+            - s3:PutObjectAcl
+          Resource:
+            - "arn:aws:s3:::${self:custom.bucketName}/*"
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}/index/*"
+
+custom:
+  bucketName: instagram-images-${self:provider.stage}
+  tableName: ImageMetadata-${self:provider.stage}
+  localstackEndpoint:
+    dev: 'http://localhost:4566'
+  pythonRequirements:
+    dockerizePip: true
+    strip: false
+
+functions:
+  api:
+    handler: src.main.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
+      - httpApi:
+          path: /
+          method: ANY
+
+resources:
+  Resources:
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - "*"
+              AllowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+              AllowedOrigins:
+                - "*"
+              ExposedHeaders:
+                - ETag
+
+    ImageMetadataTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: image_id
+            AttributeType: S
+          - AttributeName: created_at
+            AttributeType: S
+          - AttributeName: user_id
+            AttributeType: S
+          - AttributeName: tags
+            AttributeType: S
+        KeySchema:
+          - AttributeName: image_id
+            KeyType: HASH
+          - AttributeName: created_at
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: UserIndex
+            KeySchema:
+              - AttributeName: user_id
+                KeyType: HASH
+              - AttributeName: created_at
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: TagsIndex
+            KeySchema:
+              - AttributeName: tags
+                KeyType: HASH
+              - AttributeName: created_at
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  patterns:
+    - '!tests/**'
+    - '!infrastructure/**'
+    - '!docs/**'
+    - '!.pytest_cache/**'
+    - '!htmlcov/**'
+    - '!*.md'
+    - '!pytest.ini'
