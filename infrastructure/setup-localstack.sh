@@ -13,10 +13,10 @@ export AWS_ENDPOINT_URL=http://localhost:4566
 
 # Create S3 bucket for images
 echo "Creating S3 bucket..."
-awslocal s3 mb s3://instagram-images
+awslocal s3 mb s3://instagram-images-dev
 
 # Configure S3 bucket for public read access (for development)
-awslocal s3api put-bucket-cors --bucket instagram-images --cors-configuration '{
+awslocal s3api put-bucket-cors --bucket instagram-images-dev --cors-configuration '{
   "CORSRules": [
     {
       "AllowedHeaders": ["*"],
@@ -30,7 +30,7 @@ awslocal s3api put-bucket-cors --bucket instagram-images --cors-configuration '{
 # Create DynamoDB table for image metadata
 echo "Creating DynamoDB table..."
 awslocal dynamodb create-table \
-    --table-name ImageMetadata \
+    --table-name ImageMetadata-dev \
     --attribute-definitions \
         AttributeName=image_id,AttributeType=S \
         AttributeName=created_at,AttributeType=S \
@@ -82,7 +82,7 @@ awslocal iam put-role-policy \
                     "s3:GetObjectAcl",
                     "s3:PutObjectAcl"
                 ],
-                "Resource": "arn:aws:s3:::instagram-images/*"
+                "Resource": "arn:aws:s3:::instagram-images-dev/*"
             },
             {
                 "Effect": "Allow",
@@ -95,8 +95,8 @@ awslocal iam put-role-policy \
                     "dynamodb:Scan"
                 ],
                 "Resource": [
-                    "arn:aws:dynamodb:us-east-1:000000000000:table/ImageMetadata",
-                    "arn:aws:dynamodb:us-east-1:000000000000:table/ImageMetadata/index/*"
+                    "arn:aws:dynamodb:us-east-1:000000000000:table/ImageMetadata-dev",
+                    "arn:aws:dynamodb:us-east-1:000000000000:table/ImageMetadata-dev/index/*"
                 ]
             }
         ]
@@ -104,5 +104,5 @@ awslocal iam put-role-policy \
 
 echo "LocalStack setup completed successfully!"
 echo "Services available at: http://localhost:4566"
-echo "S3 bucket: instagram-images"
-echo "DynamoDB table: ImageMetadata"
+echo "S3 bucket: instagram-images-dev"
+echo "DynamoDB table: ImageMetadata-dev"

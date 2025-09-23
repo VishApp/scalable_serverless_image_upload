@@ -42,3 +42,5 @@ requests==2.31.0
 
 # Base64 encoding/decoding
 base64io==1.0.3
+
+python-multipart
