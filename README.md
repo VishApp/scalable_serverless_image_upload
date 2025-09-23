@@ -33,7 +33,7 @@ A scalable serverless image upload, storage, and retrieval service built with Fa
 
 ```bash
 git clone <repository-url>
-cd instagram-service
+cd scalable_serverless_image_upload
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
@@ -212,7 +212,7 @@ mypy src/
 ## 📊 Project Structure
 
 ```
-instagram-service/
+scalable_serverless_image_upload/
 ├── src/
 │   ├── handlers/           # Individual Lambda handlers
 │   ├── services/          # Business logic

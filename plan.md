@@ -5,7 +5,7 @@ Build a scalable backend service for image upload, storage, and retrieval using 
 
 ## **Project Structure**
 ```
-instagram-service/
+scalable_serverless_image_upload/
 ├── src/
 │   ├── handlers/           # Lambda function handlers
 │   │   ├── upload_image.py
