@@ -116,6 +116,8 @@ class TestImageService:
             'image_id': 'test123',
             'user_id': 'user123',
             'title': 'Test Image',
+            'description': 'Test description',
+            'tags': ['test', 'sample'],
             's3_key': 'images/2023/01/test123.jpg',
             'created_at': '2023-01-01T00:00:00',
             'file_name': 'test.jpg',
@@ -171,6 +173,9 @@ class TestImageService:
                 'width': 200,
                 'height': 200,
                 'format': 'jpeg',
+                'tags': ['test', 'image'],
+                'title': 'Test Image',
+                'description': 'Test description',
                 'is_deleted': False
             }
         ]

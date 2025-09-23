@@ -1,6 +1,7 @@
 from typing import Optional, Dict, Any, List
 import uuid
 import base64
+import json
 from datetime import datetime
 from src.utils.s3_client import S3Client
 from src.utils.dynamodb_client import DynamoDBClient
@@ -171,7 +172,6 @@ class ImageService:
             if page_token:
                 try:
                     # In production, you'd want to encrypt/sign this token
-                    import json
                     last_evaluated_key = json.loads(base64.b64decode(page_token).decode())
                 except Exception:
                     return {

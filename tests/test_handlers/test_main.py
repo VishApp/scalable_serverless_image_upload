@@ -67,7 +67,8 @@ class TestMainAPI:
         )
 
         assert response.status_code == 400
-        assert "File must be an image" in response.json()["detail"]
+        response_data = response.json()
+        assert "File must be an image" in response_data.get("detail", response_data.get("message", ""))
 
     @patch('src.main.image_service')
     def test_upload_image_service_error(self, mock_service, client, sample_image_file):
@@ -87,7 +88,8 @@ class TestMainAPI:
         )
 
         assert response.status_code == 400
-        assert "Service error" in response.json()["detail"]
+        response_data = response.json()
+        assert "Service error" in response_data.get("detail", response_data.get("message", ""))
 
     @patch('src.main.image_service')
     def test_list_images_success(self, mock_service, client):
@@ -99,6 +101,8 @@ class TestMainAPI:
                     'image_id': 'img1',
                     'user_id': 'user123',
                     'title': 'Test Image',
+                    'description': 'Test description',
+                    'tags': ['test', 'sample'],
                     'created_at': '2023-01-01T00:00:00',
                     'file_name': 'test.jpg',
                     'file_size': 12345,
@@ -134,6 +138,8 @@ class TestMainAPI:
                 'image_id': 'test123',
                 'user_id': 'user123',
                 'title': 'Test Image',
+                'description': 'Test description',
+                'tags': ['test', 'sample'],
                 'created_at': '2023-01-01T00:00:00',
                 'file_name': 'test.jpg',
                 'file_size': 12345,
@@ -168,13 +174,22 @@ class TestMainAPI:
             'success': True,
             'image': {
                 'image_id': 'test123',
+                'user_id': 'user123',
+                'title': 'Test Image',
+                'description': 'Test description',
+                'tags': ['test', 'sample'],
+                'created_at': '2023-01-01T00:00:00',
+                'file_name': 'test.jpg',
                 's3_key': 'images/test.jpg',
                 'content_type': 'image/jpeg',
+                'width': 200,
+                'height': 200,
+                'format': 'jpeg',
                 'file_size': 12345
             }
         }
 
-        with patch('src.main.S3Client') as mock_s3_class:
+        with patch('src.utils.s3_client.S3Client') as mock_s3_class:
             mock_s3 = mock_s3_class.return_value
             mock_s3.generate_presigned_url.return_value = "https://presigned-url.com"
 

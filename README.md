@@ -65,8 +65,8 @@ awslocal dynamodb list-tables
 ```
 
 You should see:
-- S3 bucket: `instagram-images`
-- DynamoDB table: `ImageMetadata`
+- S3 bucket: `instagram-images-dev`
+- DynamoDB table: `ImageMetadata-dev`
 
 ### 5. Run the Application
 
@@ -186,8 +186,8 @@ export AWS_ACCESS_KEY_ID=test
 export AWS_SECRET_ACCESS_KEY=test
 export AWS_DEFAULT_REGION=us-east-1
 export AWS_ENDPOINT_URL=http://localhost:4566
-export S3_BUCKET_NAME=instagram-images
-export DYNAMODB_TABLE_NAME=ImageMetadata
+export S3_BUCKET_NAME=instagram-images-dev
+export DYNAMODB_TABLE_NAME=ImageMetadata-dev
 ```
 
 ### 3. Development Server
@@ -237,8 +237,8 @@ scalable_serverless_image_upload/
 | `AWS_SECRET_ACCESS_KEY` | `test` | AWS secret key (LocalStack) |
 | `AWS_DEFAULT_REGION` | `us-east-1` | AWS region |
 | `AWS_ENDPOINT_URL` | `http://localhost:4566` | LocalStack endpoint |
-| `S3_BUCKET_NAME` | `instagram-images` | S3 bucket name |
-| `DYNAMODB_TABLE_NAME` | `ImageMetadata` | DynamoDB table name |
+| `S3_BUCKET_NAME` | `instagram-images-dev` | S3 bucket name |
+| `DYNAMODB_TABLE_NAME` | `ImageMetadata-dev` | DynamoDB table name |
 
 ### File Constraints
 

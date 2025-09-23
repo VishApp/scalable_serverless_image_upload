@@ -191,7 +191,7 @@ class QueryValidator:
     @staticmethod
     def validate_last_evaluated_key(key: Optional[str]) -> Dict[str, Any]:
         """Validate pagination key"""
-        if not key:
+        if key is None:
             return {'valid': True, 'value': None}
 
         try:

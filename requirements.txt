@@ -39,6 +39,7 @@ orjson==3.9.7
 
 # HTTP requests for testing
 requests==2.31.0
+httpx==0.25.0
 
 # Base64 encoding/decoding
 base64io==1.0.3
