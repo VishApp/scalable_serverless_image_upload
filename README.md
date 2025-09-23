@@ -29,59 +29,14 @@ A scalable serverless image upload, storage, and retrieval service built with Fa
 
 ## 🛠️ Quick Start
 
-### 1. Clone and Setup
-
-```bash
-git clone <repository-url>
-cd scalable_serverless_image_upload
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 2. Start LocalStack
+### 1. Start the project
 
 ```bash
 cd infrastructure
 docker-compose up -d
 ```
 
-Wait for LocalStack to start (about 30 seconds), then verify services:
-```bash
-docker-compose logs localstack
-```
-
-### 3. Install AWS CLI for LocalStack (if not installed)
-
-```bash
-pip install awscli-local
-```
-
-### 4. Verify LocalStack Setup
-
-```bash
-awslocal s3 ls
-awslocal dynamodb list-tables
-```
-
-You should see:
-- S3 bucket: `instagram-images-dev`
-- DynamoDB table: `ImageMetadata-dev`
-
-### 5. Run the Application
-
-#### For Local Development:
-```bash
-cd ..
-python -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-#### For Lambda Testing:
-```bash
-python -c "from src.main import handler; print('Lambda handler ready')"
-```
-
-### 6. Access the API
+### 2. Access the API
 
 - **API Base URL**: http://localhost:8000
 - **Interactive Docs**: http://localhost:8000/docs
@@ -121,7 +76,7 @@ curl "http://localhost:8000/tags/nature/images"
 ### Get Image Details
 
 ```bash
-curl "http://localhost:8000/images/{image_id}"
+curl "http://localhost:8000/tags/nature/images"
 ```
 
 ### Get Download URL
@@ -138,12 +93,6 @@ curl -X DELETE "http://localhost:8000/images/{image_id}" \
 ```
 
 ## 🧪 Running Tests
-
-### Install Test Dependencies
-
-```bash
-pip install pytest pytest-cov pytest-mock httpx
-```
 
 ### Run All Tests
 
@@ -172,10 +121,9 @@ pytest tests/test_services/test_image_service.py -v
 
 ## 🏃‍♂️ Development Workflow
 
-### 1. Start LocalStack Services
+### 1. Start All Services
 
 ```bash
-cd infrastructure
 docker-compose up -d
 ```
 
@@ -313,39 +261,6 @@ sls deploy
 - **WAF**: Web Application Firewall
 - **Secrets**: AWS Secrets Manager for credentials
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **LocalStack not starting:**
-   ```bash
-   docker-compose down
-   docker-compose up -d
-   docker-compose logs localstack
-   ```
-
-2. **Permission errors:**
-   ```bash
-   chmod +x infrastructure/setup-localstack.sh
-   ```
-
-3. **Module import errors:**
-   ```bash
-   export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-   ```
-
-4. **Tests failing:**
-   ```bash
-   pip install -e .
-   pytest --verbose
-   ```
-
-### Debug Mode
-
-```bash
-export DEBUG=1
-python -m uvicorn src.main:app --reload --log-level debug
-```
 
 ## 📚 API Documentation
 
