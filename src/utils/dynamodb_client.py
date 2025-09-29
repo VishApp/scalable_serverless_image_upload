@@ -66,7 +66,7 @@ class DynamoDBClient:
         limit: int = 20,
         last_evaluated_key: Optional[Dict] = None,
         user_id: Optional[str] = None,
-        tags: Optional[str] = None,
+        tags: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """List images with optional filters"""
         try:
@@ -80,8 +80,16 @@ class DynamoDBClient:
             if user_id:
                 filter_expressions.append(Attr("user_id").eq(user_id))
 
-            if tags:
-                filter_expressions.append(Attr("tags").contains(tags))
+            if tags and len(tags) > 0:
+                # Create OR condition for multiple tags (image matches if it has ANY of the specified tags)
+                if len(tags) == 1:
+                    filter_expressions.append(Attr("tags").contains(tags[0]))
+                else:
+                    # Multiple tags - create OR condition
+                    tag_filter = Attr("tags").contains(tags[0])
+                    for tag in tags[1:]:
+                        tag_filter = tag_filter | Attr("tags").contains(tag)
+                    filter_expressions.append(tag_filter)
 
             if filter_expressions:
                 filter_expression = filter_expressions[0]

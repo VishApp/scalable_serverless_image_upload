@@ -164,7 +164,7 @@ class ImageService:
         limit: int = 20,
         page_token: Optional[str] = None,
         user_id: Optional[str] = None,
-        tags: Optional[str] = None,
+        tags: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """List images with optional filters"""
         try:
@@ -179,12 +179,13 @@ class ImageService:
                     return {"success": False, "error": "Invalid page token"}
 
             # Query images based on filters
-            if user_id:
+            if user_id and not tags:
+                # Use GSI for user-only queries (more efficient)
                 result = self.dynamodb_client.query_images_by_user(
                     user_id=user_id, limit=limit, last_evaluated_key=last_evaluated_key
                 )
             else:
-                # Use scan with filter for tag searches since we need partial matching
+                # Use scan with filter for tag searches or combined user+tag filters
                 result = self.dynamodb_client.list_images(
                     limit=limit,
                     last_evaluated_key=last_evaluated_key,

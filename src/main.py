@@ -152,12 +152,17 @@ async def list_images(
             raise HTTPException(status_code=400, detail=token_validation["error"])
         validated_token = token_validation["value"]
 
+        # Parse tags if provided (support comma-separated tags)
+        parsed_tags = None
+        if tags:
+            parsed_tags = [tag.strip() for tag in tags.split(",") if tag.strip()]
+
         # Get images
         result = image_service.list_images(
             limit=validated_limit,
             page_token=validated_token,
             user_id=user_id,
-            tags=tags,
+            tags=parsed_tags,
         )
 
         if not result["success"]:
@@ -294,7 +299,7 @@ async def list_user_images(
     """List images for a specific user"""
     try:
         result = image_service.list_images(
-            limit=limit, page_token=page_token, user_id=user_id
+            limit=limit, page_token=page_token, user_id=user_id, tags=None
         )
 
         if not result["success"]:
@@ -323,7 +328,7 @@ async def list_images_by_tag(
 ):
     """List images with a specific tag"""
     try:
-        result = image_service.list_images(limit=limit, page_token=page_token, tags=tag)
+        result = image_service.list_images(limit=limit, page_token=page_token, tags=[tag] if tag else None)
 
         if not result["success"]:
             raise HTTPException(status_code=400, detail=result["error"])
